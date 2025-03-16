@@ -1,0 +1,32 @@
+{
+  "name": "youtube-music-electron-app",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "googleapis": "^105.0.0"
+  },
+  "devDependencies": {
+    "electron": "^25.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.dlrowelleh.youtube-music",
+    "win": {
+      "target": "portable",
+      "icon": "build/icon.ico"
+    },
+    "extraResources": [
+      {
+        "from": "src/player/yt-dlp",
+        "to": "player/yt-dlp",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  }
+}
