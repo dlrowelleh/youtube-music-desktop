@@ -3,6 +3,8 @@ const { ipcRenderer } = require("electron");
 let localPlaylist = [];
 let currentIndex = -1;
 let isPlaying = false;
+let isLoading = false;
+let nextStreamUrl = "";
 
 const audioPlayer = document.getElementById("audioPlayer");
 const playPauseButton = document.getElementById("playPauseButton");
@@ -83,10 +85,17 @@ function playPrevious() {
 }
 
 function playNext() {
-  if (currentIndex < localPlaylist.length - 1) {
+  if (currentIndex < localPlaylist.length - 1 && !isLoading) {
     currentIndex++;
     playCurrentSong();
   }
+}
+
+function preloadStream(index) {
+  if (index < 0 || index >= localPlaylist.length) return;
+
+  const nextUrl = localPlaylist[index].url;
+  ipcRenderer.send("preload-audio", nextUrl);
 }
 
 document.getElementById("playButton").addEventListener("click", () => {
@@ -130,10 +139,17 @@ function playCurrentSong() {
 
   if (currentIndex >= 0 && currentIndex < localPlaylist.length) {
     const track = localPlaylist[currentIndex];
+    isLoading = true; // 로딩 시작
+    audioPlayer.pause();
+    audioPlayer.src = "";
+    songTitle.textContent = `${track.title} 로딩 중...`;
+
     ipcRenderer.send("play-audio", track.url);
 
     currentThumbnail.src = track.thumbnail;
     currentThumbnail.style.display = "block";
+
+    preloadStream(currentIndex + 1);
 
     updatePlaylistUI();
   } else {
@@ -151,6 +167,10 @@ ipcRenderer.on("play-audio-success", (event, streamUrl) => {
   audioPlayer.play();
   playPauseButton.querySelector(".material-icons-round").textContent = "pause";
   isPlaying = true;
+  isLoading = false;
+  songTitle.textContent = `${localPlaylist[currentIndex].title} 재생 중`;
+
+  preloadNextSong(); // 다음 곡 프리로딩
 });
 
 function updatePlaylistUI() {
@@ -224,4 +244,12 @@ ipcRenderer.on("playlist-success", (event, playlistData) => {
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("currentThumbnail").style.display = "none";
+});
+
+// 로딩 중 다음곡 전환 방지
+nextButton.addEventListener("click", () => {
+  if (!isLoading) playNext();
+});
+prevButton.addEventListener("click", () => {
+  if (!isLoading) playPrevious();
 });

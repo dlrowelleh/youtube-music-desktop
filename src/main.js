@@ -6,6 +6,7 @@ const { google } = require("googleapis");
 
 let mainWindow;
 let oauth2Client;
+const streamUrlCache = {};
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -35,31 +36,66 @@ app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-ipcMain.on("play-audio", (event, videoUrl) => {
-  if (!videoUrl) {
-    dialog.showErrorBox("오류", "동영상 URL이 입력되지 않았습니다.");
+ipcMain.on("preload-audio", (event, videoUrl) => {
+  if (streamUrlCache[videoUrl]) {
+    event.reply("preload-audio-success", streamUrlCache[videoUrl]);
     return;
   }
 
-  const args = ["--get-url", "-f", "bestaudio", videoUrl];
+  const args = ["-f", "bestaudio[abr<=128]", "-g", videoUrl];
   const ytdlp = spawn(ytdlpPath, args);
 
   let streamUrl = "";
   ytdlp.stdout.on("data", (data) => {
     streamUrl += data.toString();
   });
+
   ytdlp.stderr.on("data", (data) => {
     console.error(`stderr: ${data}`);
   });
+
   ytdlp.on("close", (code) => {
     if (code === 0 && streamUrl) {
-      event.reply("play-audio-success", streamUrl.trim());
+      const cleanUrl = streamUrl.trim();
+      streamUrlCache[videoUrl] = cleanUrl;
+      event.reply("preload-audio-success", cleanUrl, videoUrl);
+    }
+  });
+});
+
+ipcMain.on("play-audio", (event, videoUrl) => {
+  if (!videoUrl) {
+    dialog.showErrorBox("오류", "동영상 URL이 입력되지 않았습니다.");
+    return;
+  }
+
+  if (streamUrlCache[videoUrl]) {
+    event.reply("play-audio-success", streamUrlCache[videoUrl]);
+    return;
+  }
+
+  const args = ["-f", "bestaudio[abr<=128]", "-g", videoUrl];
+  const ytdlp = spawn(ytdlpPath, args);
+
+  let streamUrl = "";
+  ytdlp.stdout.on("data", (data) => {
+    streamUrl += data.toString();
+  });
+
+  ytdlp.stderr.on("data", (data) => {
+    console.error(`stderr: ${data}`);
+  });
+
+  ytdlp.on("close", (code) => {
+    if (code === 0 && streamUrl) {
+      const cleanUrl = streamUrl.trim();
+      streamUrlCache[videoUrl] = cleanUrl;
+      event.reply("play-audio-success", cleanUrl);
     } else {
       dialog.showErrorBox("오류", `yt-dlp가 코드 ${code}로 종료되었습니다.`);
     }
   });
 });
-
 ipcMain.on("fetch-video-metadata", (event, videoUrl) => {
   if (!videoUrl) {
     dialog.showErrorBox("오류", "동영상 URL이 입력되지 않았습니다.");

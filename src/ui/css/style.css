@@ -22,12 +22,12 @@ body {
 
 h1 {
   font-size: 2.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 h2 {
   font-size: 1.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 h1,
@@ -72,15 +72,15 @@ h2 {
 
 .main-content {
   display: flex;
-  gap: 2rem;
-  margin-top: 2rem;
+  gap: 1.5rem;
+  margin-top: 1rem;
   width: 100%;
 }
 
 .player-section,
 .playlist-section {
   flex: 1;
-  padding: 1rem;
+  padding: 0.75rem;
 }
 
 .playlist-section {
@@ -114,7 +114,7 @@ h2 {
 .main-content {
   display: flex;
   width: 100%;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .playlist-section {
@@ -197,7 +197,7 @@ li img.thumbnail {
 }
 
 .player-section {
-  margin-top: 2.5rem;
+  margin-top: 0;
 }
 
 .url-input {
