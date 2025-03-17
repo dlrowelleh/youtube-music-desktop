@@ -23,7 +23,7 @@ function createWindow() {
 
 app.whenReady().then(createWindow);
 
-const isDev = !app.isPackaged; // 개발 모드 확인
+const isDev = !app.isPackaged;
 
 const ytdlpPath = isDev
   ? path.join(__dirname, "player", "yt-dlp", "yt-dlp.exe")
@@ -96,6 +96,7 @@ ipcMain.on("play-audio", (event, videoUrl) => {
     }
   });
 });
+
 ipcMain.on("fetch-video-metadata", (event, videoUrl) => {
   if (!videoUrl) {
     dialog.showErrorBox("오류", "동영상 URL이 입력되지 않았습니다.");

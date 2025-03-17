@@ -22,7 +22,7 @@ body {
 
 h1 {
   font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0rem;
 }
 
 h2 {
@@ -344,6 +344,29 @@ li img.thumbnail {
   opacity: 0.8;
 }
 
+/* h2 내에 있는 컨트롤 영역 스타일 */
+.playlist-controls {
+  display: inline-flex;
+  gap: 0.5rem;
+  margin-left: 1rem;
+  vertical-align: middle;
+}
+
+/* 아이콘 버튼 스타일: 배경 없이 아이콘만 보이도록 */
+.icon-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 1.5rem;
+  padding: 0.25rem;
+  transition: transform 0.2s;
+}
+
+.icon-button:hover {
+  transform: scale(1.1);
+}
+
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -413,4 +436,17 @@ input[type="range"]::-moz-range-thumb:hover {
   .volume-control {
     margin-left: 0.75rem;
   }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
 }

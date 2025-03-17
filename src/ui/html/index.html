@@ -73,11 +73,20 @@
         </div>
 
         <div class="playlist-section">
-          <h2>플레이리스트</h2>
+          <h2>
+            플레이리스트
+            <span class="playlist-controls">
+              <button id="shuffleButton" class="icon-button">
+                <span class="material-icons-round">shuffle</span>
+              </button>
+              <button id="clearPlaylistButton" class="icon-button">
+                <span class="material-icons-round">clear_all</span>
+              </button>
+            </span>
+          </h2>
           <ul id="playlistContainer"></ul>
         </div>
       </div>
-
       <div class="bottom-bar">
         <button id="googleLoginButton" class="primary-button login-button">
           <span class="material-icons-round">login</span>

@@ -16,13 +16,20 @@
   "build": {
     "appId": "com.dlrowelleh.youtube-music",
     "win": {
-      "target": "portable",
+      "target": "nsis",
       "icon": "build/icon.ico"
     },
     "extraResources": [
       {
         "from": "src/player/yt-dlp",
         "to": "player/yt-dlp",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "src/player/mpv",
+        "to": "player/mpv",
         "filter": [
           "**/*"
         ]

@@ -67,6 +67,7 @@ function togglePlayPause() {
 function handleVolumeChange() {
   const volume = volumeSlider.value / 100;
   audioPlayer.volume = volume;
+  localStorage.setItem("volume", volumeSlider.value);
 
   if (volume === 0) {
     volumeIcon.textContent = "volume_off";
@@ -139,10 +140,14 @@ function playCurrentSong() {
 
   if (currentIndex >= 0 && currentIndex < localPlaylist.length) {
     const track = localPlaylist[currentIndex];
-    isLoading = true; // 로딩 시작
+    isLoading = true;
     audioPlayer.pause();
     audioPlayer.src = "";
     songTitle.textContent = `${track.title} 로딩 중...`;
+
+    const iconElement = playPauseButton.querySelector(".material-icons-round");
+    iconElement.textContent = "autorenew";
+    iconElement.classList.add("loading-spinner");
 
     ipcRenderer.send("play-audio", track.url);
 
@@ -150,12 +155,25 @@ function playCurrentSong() {
     currentThumbnail.style.display = "block";
 
     preloadStream(currentIndex + 1);
-
     updatePlaylistUI();
   } else {
     currentThumbnail.style.display = "none";
   }
 }
+
+ipcRenderer.on("play-audio-success", (event, streamUrl) => {
+  audioPlayer.src = streamUrl;
+  audioPlayer.play();
+
+  const iconElement = playPauseButton.querySelector(".material-icons-round");
+  iconElement.classList.remove("loading-spinner");
+  iconElement.textContent = "pause";
+  isPlaying = true;
+  isLoading = false;
+  songTitle.textContent = `${localPlaylist[currentIndex].title} 재생 중`;
+
+  preloadNextSong();
+});
 
 audioPlayer.addEventListener("timeupdate", updateProgress);
 audioPlayer.addEventListener("ended", () => {
@@ -165,13 +183,44 @@ audioPlayer.addEventListener("ended", () => {
 ipcRenderer.on("play-audio-success", (event, streamUrl) => {
   audioPlayer.src = streamUrl;
   audioPlayer.play();
-  playPauseButton.querySelector(".material-icons-round").textContent = "pause";
+
+  const iconElement = playPauseButton.querySelector(".material-icons-round");
+  iconElement.classList.remove("loading-spinner");
+  iconElement.textContent = "pause";
   isPlaying = true;
   isLoading = false;
   songTitle.textContent = `${localPlaylist[currentIndex].title} 재생 중`;
 
-  preloadNextSong(); // 다음 곡 프리로딩
+  preloadNextSong();
 });
+
+function shufflePlaylist() {
+  if (localPlaylist.length <= 1) return;
+
+  const isSongPlaying =
+    currentIndex >= 0 && currentIndex < localPlaylist.length;
+
+  const currentTrack = isSongPlaying ? localPlaylist[currentIndex] : null;
+
+  for (let i = localPlaylist.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [localPlaylist[i], localPlaylist[j]] = [localPlaylist[j], localPlaylist[i]];
+  }
+
+  if (currentTrack) {
+    currentIndex = localPlaylist.findIndex(
+      (track) => track.url === currentTrack.url
+    );
+  }
+
+  updatePlaylistUI();
+}
+
+function clearPlaylist() {
+  localPlaylist = [];
+  currentIndex = -1;
+  updatePlaylistUI();
+}
 
 function updatePlaylistUI() {
   const playlistContainer = document.getElementById("playlistContainer");
@@ -203,6 +252,8 @@ function updatePlaylistUI() {
 
     playlistContainer.appendChild(li);
   });
+
+  localStorage.setItem("playlist", JSON.stringify(localPlaylist));
 }
 
 document.getElementById("googleLoginButton").addEventListener("click", () => {
@@ -244,9 +295,27 @@ ipcRenderer.on("playlist-success", (event, playlistData) => {
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("currentThumbnail").style.display = "none";
+  const savedVolume = localStorage.getItem("volume");
+  if (savedVolume !== null) {
+    volumeSlider.value = savedVolume;
+    handleVolumeChange();
+  }
+
+  const savedPlaylist = localStorage.getItem("playlist");
+  if (savedPlaylist) {
+    localPlaylist = JSON.parse(savedPlaylist);
+    updatePlaylistUI();
+  }
+
+  document.getElementById("currentThumbnail").style.display = "none";
+  document
+    .getElementById("shuffleButton")
+    .addEventListener("click", shufflePlaylist);
+  document
+    .getElementById("clearPlaylistButton")
+    .addEventListener("click", clearPlaylist);
 });
 
-// 로딩 중 다음곡 전환 방지
 nextButton.addEventListener("click", () => {
   if (!isLoading) playNext();
 });
