@@ -1,8 +1,10 @@
+add scrollbar style
 move playbar to bottom
 display the current song in a playlist
 remove only one song from a playlist 
 playlist folder
 add volume normalization
+multiple language support
 link with google acount for playlist
 add loop
 bypass age restriction
