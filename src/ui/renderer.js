@@ -51,6 +51,16 @@ function handleProgressBarClick(e) {
 }
 
 function togglePlayPause() {
+  // Check if there's a song in the playlist and a valid currentIndex
+  if (
+    localPlaylist.length === 0 ||
+    currentIndex < 0 ||
+    currentIndex >= localPlaylist.length
+  ) {
+    // No song is available to play
+    return;
+  }
+
   if (audioPlayer.paused) {
     audioPlayer.play();
     playPauseButton.querySelector(".material-icons-round").textContent =
@@ -146,7 +156,7 @@ function playCurrentSong() {
     songTitle.textContent = `${track.title} 로딩 중...`;
 
     const iconElement = playPauseButton.querySelector(".material-icons-round");
-    iconElement.textContent = "autorenew";
+    iconElement.textContent = "refresh";
     iconElement.classList.add("loading-spinner");
 
     ipcRenderer.send("play-audio", track.url);
