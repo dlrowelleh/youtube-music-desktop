@@ -13,7 +13,6 @@
   </head>
   <body>
     <div class="container">
-      <h1>YouTube Music Desktop App</h1>
       <div class="main-content">
         <div class="player-section">
           <h2>음악 재생</h2>
@@ -23,55 +22,18 @@
               id="videoUrl"
               placeholder="유튜브 URL을 입력하세요"
             />
-            <button id="playButton" class="primary-button">
+            <button id="playButton" class="control-button icon-only">
               <span class="material-icons-round">add</span>
-              추가
             </button>
           </div>
 
-          <div class="music-player">
-            <img
-              id="currentThumbnail"
-              class="current-thumbnail"
-              src=""
-              alt="Thumbnail"
-              style="display: none"
-            />
-
-            <div class="song-info">
-              <div class="song-title">재생 중인 곡이 없습니다</div>
-              <div class="song-duration">00:00 / 00:00</div>
-            </div>
-
-            <div class="progress-container">
-              <div class="progress-bar">
-                <div class="progress"></div>
-              </div>
-            </div>
-
-            <div class="controls">
-              <button class="control-button" id="prevButton">
-                <span class="material-icons-round">skip_previous</span>
-              </button>
-              <button class="control-button primary" id="playPauseButton">
-                <span class="material-icons-round">play_arrow</span>
-              </button>
-              <button class="control-button" id="nextButton">
-                <span class="material-icons-round">skip_next</span>
-              </button>
-
-              <div class="volume-control">
-                <span class="material-icons-round">volume_up</span>
-                <input
-                  type="range"
-                  id="volumeSlider"
-                  min="0"
-                  max="100"
-                  value="100"
-                />
-              </div>
-            </div>
-          </div>
+          <img
+            id="mainThumbnail"
+            class="main-thumbnail"
+            src=""
+            alt="Thumbnail"
+            style="display: none"
+          />
         </div>
 
         <div class="playlist-section">
@@ -89,11 +51,60 @@
           <ul id="playlistContainer"></ul>
         </div>
       </div>
+
       <div class="bottom-bar">
         <button id="googleLoginButton" class="primary-button login-button">
           <span class="material-icons-round">login</span>
           Google 로그인
         </button>
+      </div>
+
+      <div class="fixed-player">
+        <div class="player-content">
+          <div class="song-details">
+            <img
+              id="currentThumbnail"
+              class="current-thumbnail"
+              src=""
+              alt="Thumbnail"
+              style="display: none"
+            />
+            <div class="song-info">
+              <div class="song-title">재생 중인 곡이 없습니다</div>
+              <div class="song-duration">00:00 / 00:00</div>
+            </div>
+          </div>
+
+          <div class="player-controls">
+            <div class="controls">
+              <button class="control-button" id="prevButton">
+                <span class="material-icons-round">skip_previous</span>
+              </button>
+              <button class="control-button primary" id="playPauseButton">
+                <span class="material-icons-round">play_arrow</span>
+              </button>
+              <button class="control-button" id="nextButton">
+                <span class="material-icons-round">skip_next</span>
+              </button>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar">
+                <div class="progress"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="volume-control">
+            <span class="material-icons-round">volume_up</span>
+            <input
+              type="range"
+              id="volumeSlider"
+              min="0"
+              max="100"
+              value="100"
+            />
+          </div>
+        </div>
       </div>
 
       <audio id="audioPlayer"></audio>

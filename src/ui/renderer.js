@@ -51,13 +51,11 @@ function handleProgressBarClick(e) {
 }
 
 function togglePlayPause() {
-  // Check if there's a song in the playlist and a valid currentIndex
   if (
     localPlaylist.length === 0 ||
     currentIndex < 0 ||
     currentIndex >= localPlaylist.length
   ) {
-    // No song is available to play
     return;
   }
 
