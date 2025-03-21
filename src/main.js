@@ -42,7 +42,8 @@ ipcMain.on("preload-audio", (event, videoUrl) => {
     return;
   }
 
-  const args = ["-f", "bestaudio[abr<=128]", "-g", videoUrl];
+  const args = ["-f", "bestaudio[abr<=128]/bestaudio", "-g", videoUrl];
+
   const ytdlp = spawn(ytdlpPath, args);
 
   let streamUrl = "";

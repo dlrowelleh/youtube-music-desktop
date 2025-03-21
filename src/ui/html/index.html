@@ -22,7 +22,7 @@
               id="videoUrl"
               placeholder="유튜브 URL을 입력하세요"
             />
-            <button id="playButton" class="icon-button primary">
+            <button id="playButton" class="icon-button">
               <span class="material-icons-round">add</span>
             </button>
           </div>
@@ -71,7 +71,6 @@
             />
             <div class="song-info">
               <div class="song-title">재생 중인 곡이 없습니다</div>
-              <div class="song-duration">00:00 / 00:00</div>
             </div>
           </div>
 
@@ -88,9 +87,11 @@
               </button>
             </div>
             <div class="progress-container">
+              <span class="current-time">00:00</span>
               <div class="progress-bar">
                 <div class="progress"></div>
               </div>
+              <span class="total-duration">00:00</span>
             </div>
           </div>
 
