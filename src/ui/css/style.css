@@ -91,7 +91,7 @@ input[type="text"]:focus {
   background: rgba(24, 24, 24, 0.98);
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 1rem 2rem;
+  padding: 0.5rem 1.5rem;
   z-index: 1000;
 }
 
@@ -112,8 +112,8 @@ input[type="text"]:focus {
 }
 
 .current-thumbnail {
-  width: 60px;
-  height: 60px;
+  width: 3.75rem;
+  height: 3.75rem;
   object-fit: cover;
   border-radius: 0.5rem;
 }

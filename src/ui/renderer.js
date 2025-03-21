@@ -13,7 +13,9 @@ const nextButton = document.getElementById("nextButton");
 const volumeSlider = document.getElementById("volumeSlider");
 const progressBar = document.querySelector(".progress");
 const songTitle = document.querySelector(".song-title");
-const songDuration = document.querySelector(".song-duration");
+const currentTime = document.querySelector(".current-time");
+const totalDuration = document.querySelector(".total-duration");
+
 const volumeIcon = document.querySelector(
   ".volume-control .material-icons-round"
 );
@@ -38,9 +40,8 @@ function updateProgress() {
   if (audioPlayer.duration) {
     const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
     progressBar.style.width = `${progress}%`;
-    songDuration.textContent = `${formatTime(
-      audioPlayer.currentTime
-    )} / ${formatTime(audioPlayer.duration)}`;
+    currentTime.textContent = `${formatTime(audioPlayer.currentTime)}`;
+    totalDuration.textContent = `${formatTime(audioPlayer.duration)}`;
   }
 }
 
