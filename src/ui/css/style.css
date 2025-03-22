@@ -45,11 +45,47 @@ h2 {
 .player-section,
 .playlist-section {
   flex: 1;
+  overflow-y: auto;
   padding: 0.75rem;
+  margin-top: 0;
 }
 
 .playlist-section {
   overflow-y: auto;
+  padding-top: 0.5rem;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  margin-top: 1rem;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 5rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
 }
 
 .url-input {
@@ -325,7 +361,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 #playlistContainer li:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.3) !important;
 }
 
 #playlistContainer li img {
@@ -338,17 +374,16 @@ input[type="range"]::-webkit-slider-thumb {
 .primary-button.login-button {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
   background: linear-gradient(135deg, #ff4e50, #ff416c);
   color: #ffffff;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.3s ease;
 }
-
 .primary-button.login-button:hover {
   background: linear-gradient(135deg, #ff6b6b 0%, #ff2e63 100%);
   transform: translateY(-2px);
@@ -359,34 +394,4 @@ input[type="range"]::-webkit-slider-thumb {
   top: 1rem;
   right: 2rem;
   z-index: 1001;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.loading-spinner {
-  animation: spin 1s linear infinite;
 }

@@ -152,7 +152,9 @@ function playCurrentSong() {
     isLoading = true;
     audioPlayer.pause();
     audioPlayer.src = "";
-    songTitle.textContent = `${track.title} 로딩 중...`;
+    progressBar.style.width = "0%";
+    currentTime.textContent = "00:00";
+    totalDuration.textContent = "00:00";
 
     const iconElement = playPauseButton.querySelector(".material-icons-round");
     iconElement.textContent = "refresh";
@@ -179,7 +181,7 @@ ipcRenderer.on("play-audio-success", (event, streamUrl) => {
   iconElement.textContent = "pause";
   isPlaying = true;
   isLoading = false;
-  songTitle.textContent = `${localPlaylist[currentIndex].title} 재생 중`;
+  songTitle.textContent = `${localPlaylist[currentIndex].title}`;
 
   preloadNextSong();
 });
@@ -198,7 +200,7 @@ ipcRenderer.on("play-audio-success", (event, streamUrl) => {
   iconElement.textContent = "pause";
   isPlaying = true;
   isLoading = false;
-  songTitle.textContent = `${localPlaylist[currentIndex].title} 재생 중`;
+  songTitle.textContent = `${localPlaylist[currentIndex].title}`;
 
   preloadNextSong();
 });
@@ -251,7 +253,11 @@ function updatePlaylistUI() {
 
     if (index === currentIndex) {
       li.style.fontWeight = "bold";
-      songTitle.textContent = `${track.title} 재생 중`;
+      li.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+      songTitle.textContent = `${track.title}`;
+      setTimeout(() => {
+        li.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 100);
     }
 
     li.addEventListener("click", () => {

@@ -1,4 +1,11 @@
-const { app, BrowserWindow, ipcMain, dialog, shell } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  dialog,
+  shell,
+  Menu,
+} = require("electron");
 const path = require("path");
 const { spawn } = require("child_process");
 const fs = require("fs");
@@ -20,10 +27,14 @@ function createWindow() {
 
   mainWindow.loadFile("src/ui/html/index.html");
 }
-
-app.whenReady().then(createWindow);
-
 const isDev = !app.isPackaged;
+
+app.whenReady().then(() => {
+  if (!isDev) {
+    Menu.setApplicationMenu(null);
+  }
+  createWindow();
+});
 
 const ytdlpPath = isDev
   ? path.join(__dirname, "player", "yt-dlp", "yt-dlp.exe")
@@ -42,7 +53,12 @@ ipcMain.on("preload-audio", (event, videoUrl) => {
     return;
   }
 
-  const args = ["-f", "bestaudio[abr<=128]/bestaudio", "-g", videoUrl];
+  const args = [
+    "-f",
+    "bestaudio[abr<=128]/bestaudio[abr<=144]",
+    "-g",
+    videoUrl,
+  ];
 
   const ytdlp = spawn(ytdlpPath, args);
 
