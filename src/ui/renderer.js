@@ -1,6 +1,7 @@
 const { ipcRenderer } = require("electron");
 
 let localPlaylist = [];
+let undoStack = [];
 let currentIndex = -1;
 let isPlaying = false;
 let isLoading = false;
@@ -260,7 +261,93 @@ function updatePlaylistUI() {
       }, 100);
     }
 
+    let isSwiped = false;
+    let startX = 0;
+    let isDragging = false;
+
+    const threshold = li.offsetWidth * 0.4;
+
+    li.addEventListener("touchstart", (e) => {
+      startX = e.touches[0].clientX;
+      li.style.transition = "none";
+    });
+    li.addEventListener("touchmove", (e) => {
+      const dx = e.touches[0].clientX - startX;
+      if (dx > 0) {
+        li.style.transform = `translateX(${dx}px)`;
+      }
+    });
+    li.addEventListener("touchend", (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      li.style.transition = "transform 0.3s ease";
+      if (dx > threshold) {
+        li.style.transform = `translateX(${li.offsetWidth}px)`;
+        isSwiped = true;
+        setTimeout(() => {
+          undoStack.push({ track: track, index: index });
+          localPlaylist.splice(index, 1);
+          if (currentIndex > index) {
+            currentIndex--;
+          } else if (currentIndex === index) {
+            audioPlayer.pause();
+            currentIndex = -1;
+          }
+          updatePlaylistUI();
+        }, 300);
+      } else {
+        li.style.transform = "translateX(0px)";
+      }
+    });
+
+    li.addEventListener("mousedown", (e) => {
+      startX = e.clientX;
+      isDragging = true;
+      li.style.transition = "none";
+      e.preventDefault();
+
+      function onMouseMove(e) {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        if (dx > 0) {
+          li.style.transform = `translateX(${dx}px)`;
+        }
+      }
+
+      function onMouseUp(e) {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        li.style.transition = "transform 0.3s ease";
+        if (dx > threshold) {
+          li.style.transform = `translateX(${li.offsetWidth}px)`;
+          isSwiped = true;
+          setTimeout(() => {
+            undoStack.push({ track: track, index: index });
+            localPlaylist.splice(index, 1);
+            if (currentIndex > index) {
+              currentIndex--;
+            } else if (currentIndex === index) {
+              audioPlayer.pause();
+              currentIndex = -1;
+            }
+            updatePlaylistUI();
+          }, 300);
+        } else {
+          li.style.transform = "translateX(0px)";
+        }
+        isDragging = false;
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("mouseup", onMouseUp);
+      }
+
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
+    });
+
     li.addEventListener("click", () => {
+      if (isSwiped) {
+        isSwiped = false;
+        return;
+      }
       currentIndex = index;
       playCurrentSong();
     });
@@ -336,4 +423,19 @@ nextButton.addEventListener("click", () => {
 });
 prevButton.addEventListener("click", () => {
   if (!isLoading) playPrevious();
+});
+
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+    if (undoStack.length > 0) {
+      const { track, index } = undoStack.pop();
+
+      localPlaylist.splice(index, 0, track);
+
+      if (currentIndex >= index) {
+        currentIndex++;
+      }
+      updatePlaylistUI();
+    }
+  }
 });
