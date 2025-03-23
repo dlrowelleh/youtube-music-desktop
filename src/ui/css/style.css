@@ -386,6 +386,7 @@ input[type="range"]::-webkit-slider-thumb {
   font-weight: 500;
   transition: all 0.3s ease;
 }
+
 .primary-button.login-button:hover {
   background: linear-gradient(135deg, #ff6b6b 0%, #ff2e63 100%);
   transform: translateY(-2px);
